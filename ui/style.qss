@@ -1,0 +1,48 @@
+/* Сучасна темна тема для вікна налаштувань/історії */
+QWidget {
+    background: #1e1e26;
+    color: #e8e8ec;
+    font-family: "Segoe UI";
+    font-size: 13px;
+}
+QTabWidget::pane {
+    border: 1px solid #2e2e3a;
+    border-radius: 8px;
+}
+QTabBar::tab {
+    background: #26262f;
+    padding: 8px 16px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    margin-right: 2px;
+}
+QTabBar::tab:selected {
+    background: #3aa0ff;
+    color: white;
+}
+QComboBox, QLineEdit, QSpinBox {
+    background: #26262f;
+    border: 1px solid #3a3a48;
+    border-radius: 6px;
+    padding: 6px 8px;
+}
+QComboBox:focus, QLineEdit:focus, QSpinBox:focus {
+    border: 1px solid #3aa0ff;
+}
+QPushButton {
+    background: #3aa0ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+}
+QPushButton:hover { background: #5cb0ff; }
+QPushButton:pressed { background: #2a90ef; }
+QListWidget {
+    background: #26262f;
+    border: 1px solid #3a3a48;
+    border-radius: 6px;
+}
+QListWidget::item { padding: 6px; }
+QListWidget::item:hover { background: #2e2e3a; }
+QCheckBox { spacing: 8px; }

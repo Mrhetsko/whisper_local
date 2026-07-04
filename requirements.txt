@@ -1,0 +1,7 @@
+faster-whisper
+sounddevice
+numpy
+pyperclip
+psutil
+PySide6
+keyboard
