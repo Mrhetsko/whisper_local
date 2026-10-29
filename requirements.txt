@@ -1,4 +1,5 @@
 faster-whisper
+nvidia-cublas-cu12  # cuBLAS для роботи на NVIDIA GPU (cuDNN уже входить у ctranslate2)
 sounddevice
 numpy
 pyperclip

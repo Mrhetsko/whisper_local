@@ -7,20 +7,36 @@ APP_DIR = os.path.join(os.environ.get("APPDATA", os.path.expanduser("~")), "Whis
 SETTINGS_PATH = os.path.join(APP_DIR, "settings.json")
 
 # Варіанти для випадаючих списків у вікні налаштувань.
-MODEL_CHOICES = ["tiny", "base", "small", "medium"]
+MODEL_CHOICES = ["tiny", "base", "small", "medium", "large-v3-turbo", "large-v3"]
+# Приблизний розмір ваг на диску (≈ стільки ж займає у VRAM на GPU; на CPU int8 — менше).
+MODEL_SIZES = {
+    "tiny": "75 МБ",
+    "base": "141 МБ",
+    "small": "464 МБ",
+    "medium": "1.5 ГБ",
+    "large-v3-turbo": "1.6 ГБ",
+    "large-v3": "2.9 ГБ",
+}
 LANGUAGE_CHOICES = ["auto", "en", "uk"]
+# (значення, підпис) для вибору пристрою.
+DEVICE_CHOICES = [
+    ("auto", "Авто (NVIDIA, якщо є, інакше CPU)"),
+    ("cuda", "NVIDIA GPU (CUDA)"),
+    ("cpu", "CPU"),
+]
 
 DEFAULTS = {
-    "model_size": "base",        # tiny/base/small/medium
+    "model_size": "base",        # див. MODEL_CHOICES
     "language": "en",            # "auto" | "en" | "uk"
-    "device": "cpu",             # cpu | cuda (лише NVIDIA)
-    "compute_type": "int8",
+    "device": "auto",            # auto | cuda | cpu
     "hotkey": "ctrl+alt+z",      # глобальний toggle-хоткей
     "auto_paste": True,          # авто-вставка (Ctrl+V) в активне поле
     "clipboard_history": False,  # зберігати в історію буфера Windows (Win+V)
     "sound_enabled": True,       # звуковий сигнал на старт/стоп/скасування
-    "idle_unload": True,         # вивантажувати модель після простою
-    "idle_minutes": 10,          # таймаут простою (хв)
+    "gpu_unload": True,          # після простою вивантажувати модель з GPU (NVIDIA засинає)
+    "gpu_unload_minutes": 5,     # таймаут простою для VRAM (хв)
+    "idle_unload": True,         # вивантажувати модель після простою (будь-який пристрій)
+    "idle_minutes": 120,         # таймаут простою (хв)
     "sample_rate": 16000,
     "channels": 1,
 }

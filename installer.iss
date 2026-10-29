@@ -5,7 +5,7 @@
 ; ============================================================
 
 #define MyAppName "WhisperDictation"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Mrhetsko"
 #define MyAppExeName "WhisperDictation.exe"
 ; Папка з PyInstaller-збіркою (--onedir): містить .exe + _internal

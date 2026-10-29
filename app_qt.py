@@ -3,8 +3,14 @@
 Запуск:  venv\\Scripts\\python.exe app_qt.py
 """
 
+import multiprocessing
 import os
 import sys
+
+if __name__ == "__main__":
+    # У зібраному .exe процес розпізнавання — це той самий .exe. Перехоплюємо його
+    # тут, до імпорту Qt, щоб воркер не тягнув за собою зайві бібліотеки.
+    multiprocessing.freeze_support()
 
 from PySide6.QtWidgets import QApplication, QMessageBox, QSystemTrayIcon
 
@@ -46,7 +52,6 @@ def main():
         model_size=settings["model_size"],
         language=settings["language"],
         device=settings["device"],
-        compute_type=settings["compute_type"],
     )
 
     controller = Controller(settings, recorder, transcriber)
@@ -59,6 +64,7 @@ def main():
     controller.overlay_show.connect(overlay.show_recording)
     controller.overlay_hide.connect(overlay.hide_overlay)
     controller.status.connect(overlay.set_status)
+    controller.device_label.connect(overlay.set_device)
     controller.state_changed.connect(
         lambda s: overlay.set_transcribing() if s == "transcribing" else None
     )

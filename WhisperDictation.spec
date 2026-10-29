@@ -17,6 +17,14 @@ datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('sounddevice')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
+# cuBLAS для NVIDIA GPU (≈735 МБ). Кладемо в nvidia/cublas/bin — там його шукає
+# core/transcriber.py. nvblas і NVRTC (залежність pip-пакета) не потрібні.
+import glob
+import os
+import nvidia.cublas
+_cublas_bin = os.path.join(list(nvidia.cublas.__path__)[0], 'bin')
+binaries += [(f, 'nvidia/cublas/bin') for f in glob.glob(os.path.join(_cublas_bin, 'cublas*.dll'))]
+
 
 a = Analysis(
     ['D:\\Projects\\Other\\whisper_local\\app_qt.py'],
