@@ -5,7 +5,7 @@ import random
 import time
 
 from PySide6.QtCore import Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QFont, QGuiApplication, QPainter, QPainterPath
+from PySide6.QtGui import QColor, QFont, QFontMetrics, QGuiApplication, QPainter, QPainterPath
 from PySide6.QtWidgets import QPushButton, QWidget
 
 BARS = 24
@@ -13,10 +13,13 @@ BAR_W = 4
 BAR_GAP = 3
 BARS_X = 22
 BARS_W = BARS * (BAR_W + BAR_GAP)        # ширина зони смужок
-W = BARS_X + BARS_W + 250                # загальна ширина вікна
+W = BARS_X + BARS_W + 290                # загальна ширина вікна
 H = 84
 
 LANG_LABELS = {"auto": "авто", "en": "EN", "uk": "UA", None: "авто"}
+
+# Плашка пристрою: (фон, текст). GPU — фірмовий зелений NVIDIA.
+DEVICE_BADGE = {"GPU": ("#76b900", "#10140a"), "CPU": ("#3a3a48", "#c8c8d0")}
 
 # Силует «спектра»: центральні смужки вищі — виглядає високоточніше.
 _WEIGHTS = [0.45 + 0.55 * math.sin(math.pi * (i + 0.5) / BARS) for i in range(BARS)]
@@ -38,6 +41,7 @@ class Overlay(QWidget):
         self._status = "Запис"
         self._start_time = 0.0
         self._lang = "EN"
+        self._device = ""
 
         self.setWindowFlags(
             Qt.FramelessWindowHint
@@ -98,6 +102,10 @@ class Overlay(QWidget):
         self.done_btn.hide()
         self.cancel_btn.hide()
 
+    def set_device(self, label):
+        self._device = label
+        self.update()
+
     def set_status(self, text):
         self._status = text
         self.update()
@@ -153,14 +161,32 @@ class Overlay(QWidget):
         p.setFont(f)
         p.drawText(text_x, 14, text_w, 26, Qt.AlignVCenter | Qt.AlignLeft, self._status)
 
+        badge_x = text_x
         if self._mode == "recording":
             p.setPen(QColor("#9a9aa6"))
-            p.setFont(QFont("Segoe UI", 10))
+            info_font = QFont("Segoe UI", 10)
+            p.setFont(info_font)
             info = f"{self._lang}  ·  {self._elapsed_str()}"
             p.drawText(text_x, H - 36, text_w, 24,
                        Qt.AlignVCenter | Qt.AlignLeft, info)
+            badge_x += QFontMetrics(info_font).horizontalAdvance(info) + 10
+        self._draw_device_badge(p, badge_x, H - 36 + 4)
 
         p.end()
+
+    def _draw_device_badge(self, p, x, y):
+        if self._device not in DEVICE_BADGE:
+            return
+        bg, fg = DEVICE_BADGE[self._device]
+        f = QFont("Segoe UI", 8)
+        f.setBold(True)
+        p.setFont(f)
+        w = QFontMetrics(f).horizontalAdvance(self._device) + 12
+        p.setPen(Qt.NoPen)
+        p.setBrush(QColor(bg))
+        p.drawRoundedRect(x, y, w, 16, 5, 5)
+        p.setPen(QColor(fg))
+        p.drawText(x, y, w, 16, Qt.AlignCenter, self._device)
 
     def _draw_bars(self, p):
         p.setPen(Qt.NoPen)
